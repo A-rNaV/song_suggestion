@@ -13,7 +13,7 @@ export default function HomePage() {
         <div className="header-inner">
           <div className="logo">
             <span className="logo-icon"><img src={octavesLogo} alt="Octaves Logo" style={{ width: '40px', height: 'auto' }}/></span>
-            <span className="logo-text">SongDrop</span>
+            <span className="logo-text">SongDrop by Octaves</span>
           </div>
           <div className="live-badge">
             <span className={`dot ${isConnected ? "connected" : "disconnected"}`} />

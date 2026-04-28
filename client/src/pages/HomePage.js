@@ -11,7 +11,7 @@ export default function HomePage() {
       <header className="site-header">
         <div className="header-inner">
           <div className="logo">
-            <span className="logo-icon">🎵</span>
+            <span className="logo-icon"><img src="octaves_logo.png" alt="Octaves Logo" /></span>
             <span className="logo-text">SongDrop</span>
           </div>
           <div className="live-badge">

@@ -1,0 +1,17 @@
+{
+  "name": "song-suggestions",
+  "version": "1.0.0",
+  "description": "Real-time MERN song suggestion app",
+  "scripts": {
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\"",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "mongodb": "^7.2.0"
+  }
+}

@@ -60,16 +60,8 @@ const globalLimiter = rateLimit({
 });
 app.use("/api", globalLimiter);
 
-// Suggestion submission limiter (stricter)
-const submitLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 100,
-  message: { message: "Too many suggestions submitted. Please wait 60 seconds." },
-});
-
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use("/api/auth", require("./routes/auth"));
-app.use("/api/suggestions", submitLimiter);
 app.use("/api/suggestions", require("./routes/suggestions"));
 
 // Health check

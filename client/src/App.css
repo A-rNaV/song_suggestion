@@ -88,7 +88,7 @@ body {
   align-items: start;
 }
 @media (max-width: 768px) {
-  .two-col { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; display: flex; flex-direction: column; }
 }
 
 /* ─── Form ───────────────────────────────────────────────── */
@@ -100,6 +100,16 @@ body {
   position: sticky; top: 80px;
   box-shadow: var(--shadow);
 }
+
+@media (max-width: 768px) {
+  .suggestion-form {
+    position: relative; 
+    top: 0;             
+    margin-bottom: 20px;
+    width: 100%;
+  }
+}
+
 .form-title {
   font-family: 'Syne', sans-serif;
   font-weight: 700; font-size: 1.15rem;

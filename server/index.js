@@ -51,7 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 // Global rate limiter
 const globalLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
-  max: 60,
+  max: 6000,
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Too many requests, please slow down." },

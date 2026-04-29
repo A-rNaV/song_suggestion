@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { submitSuggestion } from "../utils/api";
 
 export default function SuggestionForm() {
-  const [form, setForm] = useState({ songName: "", singerName: "", suggestedBy: "", message: "" });
+  setForm({ songName: "", singerName: "", suggestedBy: "" });
   const [loading, setLoading] = useState(false);
   const [duplicate, setDuplicate] = useState(null);
 
@@ -38,7 +38,7 @@ export default function SuggestionForm() {
     }
   };
 
-  return (
+return (
     <form className="suggestion-form" onSubmit={handleSubmit}>
       <h2 className="form-title">🎶 Request a Song</h2>
 
@@ -71,16 +71,6 @@ export default function SuggestionForm() {
         onChange={handleChange}
         maxLength={80}
       />
-
-      // <textarea
-      //   className="field textarea"
-      //   name="message"
-      //   placeholder="Message to the club (optional)"
-      //   value={form.message}
-      //   onChange={handleChange}
-      //   maxLength={300}
-      //   rows={3}
-      // />
 
       {duplicate && (
         <div className="duplicate-warning">

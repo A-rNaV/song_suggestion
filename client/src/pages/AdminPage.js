@@ -41,13 +41,22 @@ export default function AdminPage() {
 
   // Real-time updates for admin panel too
   useEffect(() => {
-    if (!socket || !isAdmin) return;
-    socket.on("newSuggestion", (s) => {
-      setSuggestions((prev) => [s, ...prev]);
-    });
-    socket.on("clearAll", () => setSuggestions([]));
-    return () => { socket.off("newSuggestion"); socket.off("clearAll"); };
-  }, [socket, isAdmin]);
+  if (!socket || !isAdmin) return;
+  socket.on("newSuggestion", (s) => {
+    setSuggestions((prev) => [s, ...prev]);
+  });
+  socket.on("voteUpdate", ({ _id, votes }) => {
+    setSuggestions((prev) =>
+      prev.map((s) => (s._id === _id ? { ...s, votes } : s))
+    );
+  });
+  socket.on("clearAll", () => setSuggestions([]));
+  return () => { 
+    socket.off("newSuggestion"); 
+    socket.off("voteUpdate"); 
+    socket.off("clearAll"); 
+  };
+}, [socket, isAdmin]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -122,7 +131,14 @@ export default function AdminPage() {
     );
   }
 
-  const filtered = suggestions.filter((s) => filter === "all" || s.status === filter);
+  const filtered = suggestions
+  .filter((s) => filter === "all" || s.status === filter)
+  .sort((a, b) => {
+    if (b.votes !== a.votes) {
+      return b.votes - a.votes; 
+    }
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
 
   return (
     <div className="admin-panel">

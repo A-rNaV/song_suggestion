@@ -72,15 +72,15 @@ export default function SuggestionForm() {
         maxLength={80}
       />
 
-      <textarea
-        className="field textarea"
-        name="message"
-        placeholder="Message to the club (optional)"
-        value={form.message}
-        onChange={handleChange}
-        maxLength={300}
-        rows={3}
-      />
+      // <textarea
+      //   className="field textarea"
+      //   name="message"
+      //   placeholder="Message to the club (optional)"
+      //   value={form.message}
+      //   onChange={handleChange}
+      //   maxLength={300}
+      //   rows={3}
+      // />
 
       {duplicate && (
         <div className="duplicate-warning">

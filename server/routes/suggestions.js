@@ -93,16 +93,11 @@ router.get("/", async (req, res) => {
 // ─── PUBLIC: Upvote a suggestion ──────────────────────────────────────────────
 router.patch("/:id/vote", async (req, res) => {
   try {
-    const clientIP = hashIP(req.ip || req.connection.remoteAddress || "unknown");
-    const suggestion = await Suggestion.findById(req.params.id).select("+votedIPs");
+    const suggestion = await Suggestion.findById(req.params.id);
 
     if (!suggestion) return res.status(404).json({ message: "Suggestion not found" });
-    if (suggestion.votedIPs.includes(clientIP)) {
-      return res.status(429).json({ message: "You have already voted for this song" });
-    }
-
+    
     suggestion.votes += 1;
-    suggestion.votedIPs.push(clientIP);
     await suggestion.save();
 
     const io = req.app.get("io");

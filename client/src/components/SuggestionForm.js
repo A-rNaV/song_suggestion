@@ -75,7 +75,7 @@ export default function SuggestionForm() {
       <textarea
         className="field textarea"
         name="message"
-        placeholder="Message to the DJ (optional)"
+        placeholder="Message to the club (optional)"
         value={form.message}
         onChange={handleChange}
         maxLength={300}

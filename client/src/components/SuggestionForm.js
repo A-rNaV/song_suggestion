@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { submitSuggestion } from "../utils/api";
 
 export default function SuggestionForm() {
-  setForm({ songName: "", singerName: "", suggestedBy: "" });
+  const [form, setForm] = useState({songName: "", singerName: "", suggestedBy: "" });
   const [loading, setLoading] = useState(false);
   const [duplicate, setDuplicate] = useState(null);
 

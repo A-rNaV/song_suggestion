@@ -21,7 +21,8 @@ export default function SuggestionList() {
 
   const fetchSuggestions = useCallback(async () => {
     try {
-      const res = await getSuggestions({ status: "pending", sort });
+      // Fetches all songs (pending, approved, and played)
+      const res = await getSuggestions({ sort }); 
       setSuggestions(res.data);
     } catch {
       toast.error("Failed to load suggestions");
@@ -40,22 +41,21 @@ export default function SuggestionList() {
       setSuggestions((prev) => {
         const exists = prev.find((x) => x._id === s._id);
         if (exists) return prev;
-        return sort === "votes" ? [s, ...prev] : [s, ...prev];
+        return [s, ...prev];
       });
     });
 
     socket.on("voteUpdate", ({ _id, votes }) => {
       setSuggestions((prev) =>
-        prev
-          .map((s) => (s._id === _id ? { ...s, votes } : s))
-          .sort(sort === "votes" ? (a, b) => b.votes - a.votes : (a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        prev.map((s) => (s._id === _id ? { ...s, votes } : s))
       );
     });
 
     socket.on("statusUpdate", ({ _id, status }) => {
-      if (status !== "pending") {
-        setSuggestions((prev) => prev.filter((s) => s._id !== _id));
-      }
+      // Updates status in-place so played songs move to the bottom via displaySuggestions
+      setSuggestions((prev) =>
+        prev.map((s) => (s._id === _id ? { ...s, status } : s))
+      );
     });
 
     socket.on("deleteSuggestion", ({ _id }) => {
@@ -96,6 +96,20 @@ export default function SuggestionList() {
     return `${Math.floor(hrs / 24)}d ago`;
   };
 
+  // Logic to sort and display: Active songs at top, Played at bottom
+  const displaySuggestions = [...suggestions].sort((a, b) => {
+    // 1. Put "played" songs at the bottom
+    if (a.status === "played" && b.status !== "played") return 1;
+    if (a.status !== "played" && b.status === "played") return -1;
+
+    // 2. Sort remaining songs by user selection
+    if (sort === "votes") {
+      if (b.votes !== a.votes) return b.votes - a.votes;
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
   return (
     <div className="suggestion-list">
       <div className="list-header">
@@ -112,19 +126,19 @@ export default function SuggestionList() {
 
       {loading ? (
         <div className="loading-state">Loading suggestions...</div>
-      ) : suggestions.length === 0 ? (
+      ) : displaySuggestions.length === 0 ? (
         <div className="empty-state">No suggestions yet. Be the first! 🎤</div>
       ) : (
         <ul className="cards">
-          {suggestions.map((s, i) => (
-            <li key={s._id} className="card" style={{ animationDelay: `${i * 0.04}s` }}>
+          {displaySuggestions.map((s, i) => (
+            <li key={s._id} className={`card ${s.status === 'played' ? 'card-played' : ''}`} style={{ animationDelay: `${i * 0.04}s` }}>
               <div className="card-rank">#{i + 1}</div>
               <div className="card-body">
                 <div className="card-song">{s.songName}</div>
                 <div className="card-artist">by {s.singerName}</div>
                 {s.message && <div className="card-message">💬 {s.message}</div>}
                 <div className="card-meta">
-                  <span>{s.suggestedBy}</span>
+                  <span>{s.suggestedBy || "Anonymous"}</span>
                   <span>{timeAgo(s.createdAt)}</span>
                   <span className={`badge ${STATUS_LABEL[s.status]?.cls}`}>
                     {STATUS_LABEL[s.status]?.label}
@@ -134,7 +148,7 @@ export default function SuggestionList() {
               <button
                 className={`vote-btn ${votedIds.includes(s._id) ? "voted" : ""}`}
                 onClick={() => handleVote(s._id)}
-                disabled={votedIds.includes(s._id)}
+                disabled={votedIds.includes(s._id) || s.status === 'played'}
                 title={votedIds.includes(s._id) ? "Already voted" : "Upvote"}
               >
                 <span className="vote-arrow">▲</span>

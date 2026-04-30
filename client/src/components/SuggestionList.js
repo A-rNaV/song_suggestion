@@ -102,8 +102,9 @@ export default function SuggestionList() {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
+
   return (
-    <div className="suggestion-list">
+    <div className="suggestion-list container"> {/* Added a global container class */}
       <div className="list-header">
         <h2>🎵 Song Requests ({suggestions.length})</h2>
         <div className="sort-controls">
@@ -121,30 +122,33 @@ export default function SuggestionList() {
       ) : displaySuggestions.length === 0 ? (
         <div className="empty-state">No suggestions yet. Be the first! 🎤</div>
       ) : (
-        <ul className="cards">
+        <ul className="cards-grid"> {/* Renamed to cards-grid for clarity */}
           {displaySuggestions.map((s, i) => (
             <li key={s._id} className={`card ${s.status === 'played' ? 'card-played' : ''}`} style={{ animationDelay: `${i * 0.04}s` }}>
               <div className="card-rank">#{i + 1}</div>
-              <div className="card-body">
-                <div className="card-song">{s.songName}</div>
-                <div className="card-artist">by {s.singerName}</div>
-                <div className="card-meta">
-                  <span>{s.suggestedBy || "Anonymous"}</span>
-                  <span>{timeAgo(s.createdAt)}</span>
-                  <span className={`badge ${STATUS_LABEL[s.status]?.cls}`}>
-                    {STATUS_LABEL[s.status]?.label}
-                  </span>
+              <div className="card-content"> {/* Wrapped body for better flex control */}
+                <div className="card-body">
+                  <div className="card-song" title={s.songName}>{s.songName}</div>
+                  <div className="card-artist">by {s.singerName}</div>
+                  <div className="card-meta">
+                    <span className="meta-name">{s.suggestedBy || "Anonymous"}</span>
+                    <span className="meta-divider">•</span>
+                    <span>{timeAgo(s.createdAt)}</span>
+                    <span className={`badge ${STATUS_LABEL[s.status]?.cls}`}>
+                      {STATUS_LABEL[s.status]?.label}
+                    </span>
+                  </div>
                 </div>
+                <button
+                  className={`vote-btn ${votedIds.includes(s._id) ? "voted" : ""}`}
+                  onClick={() => handleVote(s._id)}
+                  disabled={votedIds.includes(s._id) || s.status === 'played'}
+                  title={s.status === 'played' ? "Song already played" : votedIds.includes(s._id) ? "Already voted" : "Upvote"}
+                >
+                  <span className="vote-arrow">▲</span>
+                  <span className="vote-count">{s.votes}</span>
+                </button>
               </div>
-              <button
-                className={`vote-btn ${votedIds.includes(s._id) ? "voted" : ""}`}
-                onClick={() => handleVote(s._id)}
-                disabled={votedIds.includes(s._id) || s.status === 'played'}
-                title={s.status === 'played' ? "Song already played" : votedIds.includes(s._id) ? "Already voted" : "Upvote"}
-              >
-                <span className="vote-arrow">▲</span>
-                <span className="vote-count">{s.votes}</span>
-              </button>
             </li>
           ))}
         </ul>

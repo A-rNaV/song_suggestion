@@ -21,7 +21,6 @@ export default function SuggestionList() {
 
   const fetchSuggestions = useCallback(async () => {
     try {
-      // Fetches all songs (pending, approved, and played)
       const res = await getSuggestions({ sort }); 
       setSuggestions(res.data);
     } catch {
@@ -33,7 +32,6 @@ export default function SuggestionList() {
 
   useEffect(() => { fetchSuggestions(); }, [fetchSuggestions]);
 
-  // Real-time updates
   useEffect(() => {
     if (!socket) return;
 
@@ -52,7 +50,6 @@ export default function SuggestionList() {
     });
 
     socket.on("statusUpdate", ({ _id, status }) => {
-      // Updates status in-place so played songs move to the bottom via displaySuggestions
       setSuggestions((prev) =>
         prev.map((s) => (s._id === _id ? { ...s, status } : s))
       );
@@ -96,13 +93,8 @@ export default function SuggestionList() {
     return `${Math.floor(hrs / 24)}d ago`;
   };
 
-  // Logic to sort and display: Active songs at top, Played at bottom
+  // CLEAN SORT: Suggestions stay in place based on votes/time regardless of status
   const displaySuggestions = [...suggestions].sort((a, b) => {
-    // 1. Put "played" songs at the bottom
-    if (a.status === "played" && b.status !== "played") return 1;
-    if (a.status !== "played" && b.status === "played") return -1;
-
-    // 2. Sort remaining songs by user selection
     if (sort === "votes") {
       if (b.votes !== a.votes) return b.votes - a.votes;
       return new Date(b.createdAt) - new Date(a.createdAt);
@@ -136,7 +128,6 @@ export default function SuggestionList() {
               <div className="card-body">
                 <div className="card-song">{s.songName}</div>
                 <div className="card-artist">by {s.singerName}</div>
-                {s.message && <div className="card-message">💬 {s.message}</div>}
                 <div className="card-meta">
                   <span>{s.suggestedBy || "Anonymous"}</span>
                   <span>{timeAgo(s.createdAt)}</span>
@@ -149,7 +140,7 @@ export default function SuggestionList() {
                 className={`vote-btn ${votedIds.includes(s._id) ? "voted" : ""}`}
                 onClick={() => handleVote(s._id)}
                 disabled={votedIds.includes(s._id) || s.status === 'played'}
-                title={votedIds.includes(s._id) ? "Already voted" : "Upvote"}
+                title={s.status === 'played' ? "Song already played" : votedIds.includes(s._id) ? "Already voted" : "Upvote"}
               >
                 <span className="vote-arrow">▲</span>
                 <span className="vote-count">{s.votes}</span>

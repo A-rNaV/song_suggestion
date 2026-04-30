@@ -339,3 +339,109 @@ body {
 }
 .admin-link { color: var(--text3); font-size: 0.78rem; text-decoration: none; }
 .admin-link:hover { color: var(--accent2); }
+
+
+/* Responsive Container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Header Responsiveness */
+.list-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .list-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* The Cards Grid */
+.cards-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on large screens */
+  }
+}
+
+/* Card Layout */
+.card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden; /* Prevents text overflow */
+}
+
+.card-rank {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #6366f1;
+  margin-right: 1rem;
+  min-width: 40px;
+}
+
+.card-content {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 0; /* Critical for text-truncation */
+}
+
+.card-body {
+  min-width: 0;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+/* Text Truncation for long song names */
+.card-song {
+  font-weight: 700;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-artist {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Meta Data Wrap */
+.card-meta {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap on very small screens */
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.meta-divider {
+  display: none;
+}
+
+@media (min-width: 400px) {
+  .meta-divider { display: inline; }
+}

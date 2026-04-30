@@ -4,7 +4,7 @@ import { getSuggestions, voteSuggestion } from "../utils/api";
 import { useSocket } from "../context/SocketContext";
 
 const STATUS_LABEL = {
-  pending: { label: "Pending", cls: "badge-pending" },
+  pending: { label: "Pending", cls: "badge-played" },
   approved: { label: "Approved", cls: "badge-approved" },
   played: { label: "Played ✓", cls: "badge-played" },
   rejected: { label: "Rejected", cls: "badge-rejected" },
